@@ -39,8 +39,6 @@ def main():
     T = 1000 
     N = 2000
     dt = float(T)/float(N)
-    #t = np.arange(0.0, float(T), dt)
-    #the above is the same as the bottom i think
     t = np.array([n*dt for n in range(N)])
     
     """ Creating a one dimensional domain with unit length and J=100 equally spaced grid points """
@@ -48,8 +46,6 @@ def main():
     J = 1000
     dx = float(L)/float(J-1)
     x_grid = np.array([j*dx for j in range(J)])
-    #x_grid = np.arange(0.0, float(J), dx)
-    #x_grid = np.linspace(0,1,N)
 
     #resting potential = -70
     V_old= [-70 for j in range(J)]
@@ -62,20 +58,20 @@ def main():
 
     Identity = np.identity(J)
 
-    A_v = Identity + A_v
+
+    # I initially intended for this but I can't seem to get it running without the determinant becoming 0 thus making it impossible to solve
     #A_v = Identity - A_v
+    A_v = Identity + A_v
     #A_v = A_v - Identity 
     B_v = B_v + Identity
     
-    #B_v = Identity + B_v
-    #print(A_v)
-    #print(B_v)
 
+    #change this value for the actual nth printing of the graph
     nplot = 2
     c=0
     #the Zeroth time step
-    I_ion_old = hh.HodgkinHuxley().main(t, V_old)
-    print(I_ion_old)
+    I_ion_old = hh.HodgkinHuxley().main(t, V_old, J)
+    #print(I_ion_old)
     I_ion_old = [i*(dt/C_m) for i in I_ion_old] 
     for i in range(1,N):
         # Here i is the ith time step in the entire simulation
@@ -105,22 +101,15 @@ def main():
             c += 1
         #print("--------------------------")
         #print(I_ion_old)
-        print(V_new)
+        #print(V_new)
         #print(i)
-        I_ion_new = hh.HodgkinHuxley().main(t, V_old)
+        I_ion_new = hh.HodgkinHuxley().main(t, V_old, J)
         V_old = V_new
         I_ion_new = [i*(dt/C_m) for i in I_ion_new]
         I_ion_old = I_ion_new
 
 os.system("ffmpeg -y -i 'foo%03d.jpg' cable_eqn.m4v")
 os.system("rm -f *.jpg")
-
-        #if you plot I_ion and x_grid you 
-        #make sure the second part is a vector
-
-    #TODO: Figure out what the boundary conditions?
-        #initial conditions are in Time
-        #boundary conditions are in Space
 
 if __name__ == '__main__':
     main()

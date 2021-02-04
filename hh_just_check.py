@@ -65,21 +65,22 @@ class HodgkinHuxley():
         # dh/dt
         dy[2] = (self.alpha_h(V[self.counter ]) * (1.0 - h)) - (self.beta_h(V[self.counter ]) * h)
         self.counter += 1
-        print(self.counter)
+        #print(self.counter)
         #I need to figure out a way to control the number of time the integration occurs
         # self.counter = min(self.counter, 99)
         # if self.counter == 100:
         #     self.counter = 0
         return dy
 
-    def main(self, t, V_old):
+    def main(self, t, V_old, J):
         Y = np.array([self.n_inf(V_old[0]), self.m_inf(V_old[0]), self.h_inf(V_old[0])])
         self.counter = 0 
+        # the present implementation works becouse of rtol which essentially limits the actual integration dt within the odeint function.
         Vy = odeint(self.derivatives, Y,t,  args=(V_old,), rtol = 100e100)
         #Vy = solve_ivp(self.derivatives, (0.0, float(N)), Y, t_eval=t, args=(V_old,) rtol = 1e10000)
+        self.counter = 0 
         #use only dt only for the integrate
         #don't calculate future values
-        self.counter = 0 
         n = Vy[:,0]
         m = Vy[:,1]
         h = Vy[:,2]
@@ -97,8 +98,8 @@ class HodgkinHuxley():
         
         
         #padding I with zeros for values unknown to us
-        # THis is the value of J
-        shape = np.zeros(1000)
+        # This is the value of J
+        shape = np.zeros(J)
         I = np.zeros(shape.shape)
         return I
 

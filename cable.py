@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 import os, sys
 
 
-def Input_stimuli(t):
-    """ Current applied to create stimulus which is dependent on time, in milli Ampere(A)/cm^2 """
-    # if 120.0 < t < 132.0:
-    #     return 150.0
-    # elif 5.0 < t < 10.0:
-    #     return 1.0
-    return 1.0
+# def Input_stimuli(t):
+#     """ Current applied to create stimulus which is dependent on time, in milli Ampere(A)/cm^2 """
+#     # if 120.0 < t < 132.0:
+#     #     return 150.0
+#     # elif 5.0 < t < 10.0:
+#     #     return 1.0
+#     return 1.0
 
 np.set_printoptions(precision=3)
 
@@ -86,6 +86,8 @@ def main():
             V_old[-1] +=  val 
             V_old[-2] +=  val 
             V_old[-3] +=  val 
+        # turn off I ion 
+        #I_ion_old = [0]*J
         B_part = np.matmul(B_v, V_old) - I_ion_old
         V_new = np.linalg.solve(A_v, B_part)
         if(i%nplot==0): #plot results every nplot timesteps

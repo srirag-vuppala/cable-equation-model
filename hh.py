@@ -77,12 +77,15 @@ class HodgkinHuxley():
         return dy
 
     def main(self, t, V_old, J, timestep):
+        # print("this is V_old")
+        # print(V_old)
+
         #build t arr upto timestep
         # to make sure to not use future values
         t = np.array([n*cable.dt for n in range(timestep)])
         
         Y = np.array([self.n_inf(V_old[timestep-1]), self.m_inf(V_old[timestep-1]), self.h_inf(V_old[timestep-1])])
-        # Y = np.array([self.n_inf(V_old[0]), self.m_inf(V_old[0]), self.h_inf(V_old[0])])
+        #Y = np.array([self.n_inf(V_old[0]), self.m_inf(V_old[0]), self.h_inf(V_old[0])])
 
         # #prepad the values of V_old
         # for i in range(timestep):
@@ -114,7 +117,7 @@ class HodgkinHuxley():
         GNa = []
         GL = []
         #for i in range(len(V_old)):
-        for i in range(len(V_old)):
+        for i in range(J):
             GK.append((self.g_K / self.C_m) * np.power(n[i], 4.0))
             GNa.append((self.g_Na / self.C_m) * np.power(m[i], 3.0) * h[i])
             GL.append(self.g_L / self.C_m) 
@@ -135,8 +138,8 @@ class HodgkinHuxley():
         init_len = len(I)
         for i in range(J-init_len):
             I = np.append(I, 0)
-        print("this is the Ion current")
-        print(I)
+        # print("this is the Ion current")
+        # print(I)
         return I
 
 if __name__ == '__main__':

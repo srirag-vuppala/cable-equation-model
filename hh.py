@@ -78,14 +78,17 @@ class HodgkinHuxley():
 
     def main(self, t, V_old, J, timestep):
         #build t arr upto timestep
+        # to make sure to not use future values
         t = np.array([n*cable.dt for n in range(timestep)])
         
         Y = np.array([self.n_inf(V_old[timestep-1]), self.m_inf(V_old[timestep-1]), self.h_inf(V_old[timestep-1])])
         # Y = np.array([self.n_inf(V_old[0]), self.m_inf(V_old[0]), self.h_inf(V_old[0])])
+
         # #prepad the values of V_old
         # for i in range(timestep):
         #     V_old.insert(0, 0)
         # print(V_old)
+
         # #postpad the values of V_old
         # init_len = len(V_old)
         # for i in range(J-init_len):
@@ -93,12 +96,9 @@ class HodgkinHuxley():
         #print(V_old)
             
         self.counter = 0 
-        # the present implementation works becouse of rtol which essentially limits the actual integration dt within the odeint function.
         #Vy = odeint(self.derivatives, Y,t,  args=(V_old,), rtol = 1e9)
         Vy = odeint(self.derivatives, Y,t,  args=(V_old,))
         self.counter = 0 
-        #use only dt only for the integrate
-        #don't calculate future values
         n = Vy[:,0]
         m = Vy[:,1]
         h = Vy[:,2]
@@ -135,6 +135,7 @@ class HodgkinHuxley():
         init_len = len(I)
         for i in range(J-init_len):
             I = np.append(I, 0)
+        print("this is the Ion current")
         print(I)
         return I
 

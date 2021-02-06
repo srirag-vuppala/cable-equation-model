@@ -1,5 +1,5 @@
 import numpy as np
-import hh_just_check as hh
+import hh as hh
 import math
 import matplotlib.pyplot as plt
 import os, sys
@@ -22,6 +22,13 @@ N = 100
 dt = float(T)/float(N)
 t = np.array([n*dt for n in range(N)])
 
+""" Creating a one dimensional domain with unit length and J=100 equally spaced grid points """
+L = 30
+#J = 1000
+J = 100
+dx = float(L)/float(J-1)
+x_grid = np.array([j*dx for j in range(J)])
+
 def main():
     """ An implementation of the CableEquation where the Hodgkin Huxley equations
     describe the nature of Ionic current """ 
@@ -41,21 +48,11 @@ def main():
     """ resistance per unit len extracellular space, in omega-cm """
     r_e = 1/(math.pi*(Cell_rad+0.00001)*(Cell_rad+0.00001)*20) 
 
-   
-    
-    """ Creating a one dimensional domain with unit length and J=100 equally spaced grid points """
-    L = 30
-    #J = 1000
-    J = 100
-    dx = float(L)/float(J-1)
-    x_grid = np.array([j*dx for j in range(J)])
-
     #resting potential = -70
     V_old= [-70 for j in range(J)]
 
     """ This is the D*delta(t)/delta(x)^2 """
     D_v = dt/(2*C_m*Cell_peri*(r_i + r_e)*dx*dx)
-    #D_v = dt/(2*C_m*Cell_peri*(r_i + r_e)*dx)
     
     A_v = np.diagflat([-D_v for i in range(J-1)], -1) + np.diagflat([1.+D_v]+[1. + 2.*D_v for i in range(J-2)]+[1.+D_v]) + np.diagflat([-1*D_v for i in range(J-1)], 1)
     B_v = np.diagflat([D_v for i in range(J-1)], -1) + np.diagflat([1.-D_v]+[1. - 2.*D_v for i in range(J-2)]+[1.-D_v]) + np.diagflat([D_v for i in range(J-1)], 1)
@@ -77,11 +74,6 @@ def main():
     # 0 time step index
     # I_ion_old = hh.HodgkinHuxley().main(t, [V_old[0]], J, 0)
     I_ion_old = hh.HodgkinHuxley().main(t, V_old, J, 0)
-    # print(I_ion_old)
-    # I_ion_old = [round(i*(dt/C_m),2) for i in I_ion_old] 
-    # I_ion_old = [-18.7] 
-    # for i in range(J-1):
-    #     I_ion_old.append(0)
     I_ion_old = [i*(dt/C_m) for i in I_ion_old] 
 
     for i in range(1,N):
@@ -110,7 +102,6 @@ def main():
             plt.clf()
             c += 1
         #print(V_new)
-        #I_ion_new = hh.HodgkinHuxley().main(t, V_new[:i], J, i)
         I_ion_new = hh.HodgkinHuxley().main(t, V_old, J, i)
         #print(I_ion_new)
         V_old = V_new

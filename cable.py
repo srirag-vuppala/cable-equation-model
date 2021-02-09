@@ -71,6 +71,8 @@ def main():
     # for now I_ion_old is [n, m, h]
     I_ion_old = hh.HodgkinHuxley().main(V_old)
 
+    # If you notice the graphs the graph of n and m spike down at the ending this is due to the alpha_n and alpha_m returning 0 to prevent nan
+    # Also within hh.py the way its going right now I'll be having a two dimensional array returned as I_ion. I'm kinda stuck on how to interpret/use it here.
     for i in range(100):
         plt.figure()
         plt.subplot(4,1,3)

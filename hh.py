@@ -169,7 +169,7 @@ class HodgkinHuxley():
         dn = [self.n_inf(V_old)]
         dm = [self.m_inf(V_old)]
         dh = [self.h_inf(V_old)]
-        print(dn[0][0])
+        #print(dn[0][0])
         for i in range(1, len(V_old)):
             temp_dn = []
             temp_dm = []

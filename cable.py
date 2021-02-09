@@ -71,6 +71,7 @@ def main():
     # for now I_ion_old is [n, m, h]
     I_ion_old = hh.HodgkinHuxley().main(V_old)
 
+    #TODO Dr.Lin notes:
     # If you notice the graphs the graph of n and m spike down at the ending this is due to the alpha_n and alpha_m returning 0 to prevent nan
     # Also within hh.py the way its going right now I'll be having a two dimensional array returned as I_ion. I'm kinda stuck on how to interpret/use it here.
     for i in range(100):
@@ -126,8 +127,8 @@ def main():
     #     V_old = V_new
     #     I_ion_old = I_ion_new
 
-os.system("ffmpeg -y -i 'foo%03d.jpg' cable_eqn.m4v")
-os.system("rm -f *.jpg")
+# os.system("ffmpeg -y -i 'foo%03d.jpg' cable_eqn.m4v")
+# os.system("rm -f *.jpg")
 
 if __name__ == '__main__':
     main()

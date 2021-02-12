@@ -74,18 +74,25 @@ def main():
     #TODO Dr.Lin notes:
     # If you notice the graphs the graph of n and m spike down at the ending this is due to the alpha_n and alpha_m returning 0 to prevent nan
     # Also within hh.py the way its going right now I'll be having a two dimensional array returned as I_ion. I'm kinda stuck on how to interpret/use it here.
+
+    # Uncomment this to get the graph for nmh
+    # for i in range(100):
+    #     plt.figure()
+    #     plt.plot(t, I_ion_old[0][i], 'b', label='n')
+    #     plt.plot(t, I_ion_old[1][i], 'r', label='m')
+    #     plt.plot(t, I_ion_old[2][i], 'g', label='h')
+    #     plt.ylabel('Gating Value')
+    #     plt.xlabel('Time (ms)')
+    #     plt.legend()
+    #     plt.show()
+
+    # Ionic current from hh tbh I'm not sure if this is useful data 
     for i in range(100):
-        plt.figure()
-        plt.subplot(4,1,3)
-        plt.plot(t, I_ion_old[0][i], 'b', label='n')
-        plt.plot(t, I_ion_old[1][i], 'r', label='m')
-        plt.plot(t, I_ion_old[2][i], 'g', label='h')
-        plt.ylabel('Gating Value')
+        fig = plt.figure()
+        plt.plot(t, I_ion_old[3][i], '', label='I ion')
+        plt.ylabel('Current mA')
         plt.xlabel('Time (ms)')
         plt.legend()
-        plt.show()
-
-
 
     # for i in range(1,N):
     #     # Here i is the ith time step in the entire simulation

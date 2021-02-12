@@ -22,6 +22,42 @@ class HodgkinHuxley():
     """Leak current Diffusion potentials, in mV"""
     counter = 0 
 
+    def arr_alpha_m(self, V):
+        fin = []
+        for v in V:
+            fin.append(self.alpha_m(v))
+        return fin
+
+    def arr_alpha_n(self, V):
+        fin = []
+        for v in V:
+            fin.append(self.alpha_n(v))
+        return fin
+        
+    def arr_alpha_h(self, V):
+        fin = []
+        for v in V:
+            fin.append(self.alpha_h(v))
+        return fin
+ 
+    def arr_beta_n(self, V):
+        fin = []
+        for v in V:
+            fin.append(self.beta_n(v))
+        return fin
+ 
+    def arr_beta_m(self, V):
+        fin = []
+        for v in V:
+            fin.append(self.beta_m(v))
+        return fin
+            
+    def arr_beta_h(self, V):
+        fin = []
+        for v in V:
+            fin.append(self.beta_h(v))
+        return fin
+ 
     def alpha_m(self, V):
         """Channel gating kinetics. Functions of membrane voltage"""
         # THis is 25 because apparently the exp fucntion doesn't like np.exp(0)
@@ -92,33 +128,33 @@ class HodgkinHuxley():
     #     #print(self.counter)
     #     self.counter = min(self.counter, cable.J - 1)
     #     return dy
-    def derivatives_n(self, t,y, V):
-        n = [0]
-        v_temp = V[self.counter] 
-        # dn/dt
-        n = (self.alpha_n(v_temp) * (1.0 - y)) - (self.beta_n(v_temp) * y)
-        self.counter += 1 
-        #print(self.counter)
-        self.counter = min(self.counter, cable.J - 1)
-        return n 
+    # def derivatives_n(self, t,y, V):
+    #     n = [0]
+    #     v_temp = V[self.counter] 
+    #     # dn/dt
+    #     n = (self.alpha_n(v_temp) * (1.0 - y)) - (self.beta_n(v_temp) * y)
+    #     self.counter += 1 
+    #     #print(self.counter)
+    #     self.counter = min(self.counter, cable.J - 1)
+    #     return n 
         
-    def derivatives_m(self, t,y, V):
-        m = [0]
-        v_temp = V[self.counter]
-        # dn/dt
-        m = (self.alpha_m(v_temp) * (1.0 - y)) - (self.beta_m(v_temp) * y)
-        self.counter += 1 
-        self.counter = min(self.counter, cable.J - 1)
-        return m 
+    # def derivatives_m(self, t,y, V):
+    #     m = [0]
+    #     v_temp = V[self.counter]
+    #     # dn/dt
+    #     m = (self.alpha_m(v_temp) * (1.0 - y)) - (self.beta_m(v_temp) * y)
+    #     self.counter += 1 
+    #     self.counter = min(self.counter, cable.J - 1)
+    #     return m 
 
-    def derivatives_h(self, t,y, V):
-        h = [0]
-        v_temp = V[self.counter]  
-        # dn/dt
-        h = (self.alpha_h(v_temp) * (1.0 - y)) - (self.beta_h(v_temp) * y)
-        self.counter += 1 
-        self.counter = min(self.counter, cable.J - 1)
-        return h 
+    # def derivatives_h(self, t,y, V):
+    #     h = [0]
+    #     v_temp = V[self.counter]  
+    #     # dn/dt
+    #     h = (self.alpha_h(v_temp) * (1.0 - y)) - (self.beta_h(v_temp) * y)
+    #     self.counter += 1 
+    #     self.counter = min(self.counter, cable.J - 1)
+    #     return h 
 
     def main(self, V_old):
         # print("this is V_old")
@@ -170,6 +206,8 @@ class HodgkinHuxley():
         dm = [self.m_inf(V_old)]
         dh = [self.h_inf(V_old)]
         #print(dn[0][0])
+        
+        a_n = []
         for i in range(1, len(V_old)):
             temp_dn = []
             temp_dm = []
@@ -186,7 +224,7 @@ class HodgkinHuxley():
         m = dm
         h = dh
 
-        return [n,m,h]
+        #return [n,m,h]
       
         #pad the values of V_old
         # init_len = len(n)
@@ -203,8 +241,10 @@ class HodgkinHuxley():
             na_temp = []
             l_temp = []
             for j in range(len(V_old)):
-                k_temp.append(self.g_K * np.power(n[i][j], 4.0))
-                na_temp.append(self.g_Na * np.power(m[i][j], 3.0) * h[i][j])
+                #k_temp.append(self.g_K * np.power(n[i][j], 4.0))
+                k_temp.append(self.g_K * n[i][j]*n[i][j]*n[i][j]*n[i][j])
+                #na_temp.append(self.g_Na * np.power(m[i][j], 3.0) * h[i][j])
+                na_temp.append(self.g_Na * m[i][j]*m[i][j]*m[i][j] * h[i][j])
                 l_temp.append(self.g_L) 
             GK.append(k_temp)
             GNa.append(na_temp)
@@ -214,8 +254,12 @@ class HodgkinHuxley():
         # Going upto that point
         #for i in range(timestep+1):
         for i in range(len(V_old)):
-        #for i in range(J):
-            I.append((GK[i] * (V_old[i] - self.V_K)) + (GNa[i] * (V_old[i] - self.V_Na)) + (GL[i] * (V_old[i] - self.V_L)) - cable.Input_stimuli(i*cable.dt))
+            dI = []
+            for j in range(len(V_old)):
+                dI.append((GK[i][j] * (V_old[i] - self.V_K)) + (GNa[i][j] * (V_old[i] - self.V_Na)) + (GL[i][j] * (V_old[i] - self.V_L)) - cable.Input_stimuli(i*cable.dt))
+            I.append(dI)
+        
+        return [n, m, h, I]
 
             #I.append(-1*(1.0/ self.C_m) + (GK[i] * (V_old[i] - self.V_K)) + (GNa[i] * (V_old[i] - self.V_Na)) + (GL[i] * (V_old[i] - self.V_L)))
             #I.append(-1*(1.0/ self.C_m) + (GK[i] * (V_old[timestep] - self.V_K)) + (GNa[i] * (V_old[timestep] - self.V_Na)) + (GL[i] * (V_old[timestep] - self.V_L)))

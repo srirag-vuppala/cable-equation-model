@@ -69,70 +69,63 @@ def main():
     #print(V_old)
 
     # for now I_ion_old is [n, m, h]
-    I_ion_old = hh.HodgkinHuxley().main(V_old)
+    hh_arr= hh.HodgkinHuxley().main(V_old)
 
     #TODO Dr.Lin notes:
     # If you notice the graphs the graph of n and m spike down at the ending this is due to the alpha_n and alpha_m returning 0 to prevent nan
-    # Also within hh.py the way its going right now I'll be having a two dimensional array returned as I_ion. I'm kinda stuck on how to interpret/use it here.
+    fig = plt.figure()
+    #plt.plot(t, hh_arr[0], 'b', label='n')
+    #plt.plot(t, hh_arr[1], 'r', label='m')
+    #plt.plot(t, hh_arr[2], 'g', label='h')
+    plt.plot(t, hh_arr[3], '', label='I ion')
+    plt.ylabel('Current mA')
+    plt.xlabel('Time (ms)')
+    plt.legend()
+    plt.show()
 
-    # Uncomment this to get the graph for nmh
-    # for i in range(100):
-    #     plt.figure()
-    #     plt.plot(t, I_ion_old[0][i], 'b', label='n')
-    #     plt.plot(t, I_ion_old[1][i], 'r', label='m')
-    #     plt.plot(t, I_ion_old[2][i], 'g', label='h')
-    #     plt.ylabel('Gating Value')
-    #     plt.xlabel('Time (ms)')
-    #     plt.legend()
-    #     plt.show()
+#     # Actually making
+#     I_ion_old = hh_arr[3]
+#     for i in range(1,N):
+#         # Here i is the ith time step in the entire simulation
+#         if i < 10:
+#             val = 5 
+#             V_old[1] -= val 
+#             V_old[2] -= val 
+#             V_old[3] -= val 
+#             V_old[-1] +=  val 
+#             V_old[-2] +=  val 
+#             V_old[-3] +=  val 
 
-    # Ionic current from hh tbh I'm not sure if this is useful data 
-    for i in range(100):
-        fig = plt.figure()
-        plt.plot(t, I_ion_old[3][i], '', label='I ion')
-        plt.ylabel('Current mA')
-        plt.xlabel('Time (ms)')
-        plt.legend()
-
-    # for i in range(1,N):
-    #     # Here i is the ith time step in the entire simulation
-    #     if i < 10:
-    #         # val = 5 
-    #         # V_old[1] -= val 
-    #         # V_old[2] -= val 
-    #         # V_old[3] -= val 
-    #         # V_old[-1] +=  val 
-    #         # V_old[-2] +=  val 
-    #         # V_old[-3] +=  val 
-
-    #         V_old[-1] = -40 
-    #         V_old[-2] = -40 
-    #         V_old[-3] = -40 
-    #         V_old[0] = -100 
-    #         V_old[1] = -100 
-    #         V_old[2] = -100
+#             # V_old[-1] = -40 
+#             # V_old[-2] = -40 
+#             # V_old[-3] = -40 
+#             # V_old[0] = -100 
+#             # V_old[1] = -100 
+#             # V_old[2] = -100
             
-    #     # turn off I ion 
-    #     #I_ion_old = [0]*J
-    #     B_part = np.matmul(B_v, V_old) - I_ion_old
-    #     V_new = np.linalg.solve(A_v, B_part)
-    #     if(i%nplot==0): #plot results every nplot timesteps
-    #         plt.plot(x_grid,V_new,linewidth=2)
-    #         plt.ylim([-200, 100])
-    #         plt.xlim([-2,35])
-    #         filename = 'foo' + str(c+1).zfill(3) + '.jpg'
-    #         plt.xlabel("x in cm")
-    #         plt.ylabel("Transmembrane pot in mv")
-    #         plt.axhline(0, color='black')
-    #         plt.axvline(-0, color='black')
-    #         plt.title("t = %2.2f"%(dt*(i+1)))
-    #         plt.savefig(filename)
-    #         plt.clf()
-    #         c += 1
-    #     #print(V_new)
-    #     I_ion_new = hh.HodgkinHuxley().main(t, V_old, i)
-    #     V_old = V_new
-    #     I_ion_old = I_ion_new
+#         # turn off I ion 
+#         #I_ion_old = [0]*J
+#         B_part = np.matmul(B_v, V_old) - I_ion_old
+#         V_new = np.linalg.solve(A_v, B_part)
+#         if(i%nplot==0): #plot results every nplot timesteps
+#             plt.plot(x_grid,V_new,linewidth=2)
+#             plt.ylim([-200, 100])
+#             plt.xlim([-2,35])
+#             filename = 'foo' + str(c+1).zfill(3) + '.jpg'
+#             plt.xlabel("x in cm")
+#             plt.ylabel("Transmembrane pot in mv")
+#             plt.axhline(0, color='black')
+#             plt.axvline(-0, color='black')
+#             plt.title("t = %2.2f"%(dt*(i+1)))
+#             plt.savefig(filename)
+#             plt.clf()
+#             c += 1
+#         #print(V_new)
+#         #hh_arr = hh.HodgkinHuxley().main(t, V_old)
+#         hh_arr = hh.HodgkinHuxley().main(V_old)
+#         I_ion_new = hh_arr[3]
+#         V_old = V_new
+#         I_ion_old = I_ion_new
 
 # os.system("ffmpeg -y -i 'foo%03d.jpg' cable_eqn.m4v")
 # os.system("rm -f *.jpg")

@@ -83,7 +83,7 @@ class HodgkinHuxley():
         fin_m = []
         for i in range(len(V_old)):
             # I put timestep as i here but I can change that if necessary
-            timestep = i/2
+            timestep = i
             fin_n.append(dn[i]+timestep*(self.alpha_n(V_old[i])*(1-dn[i]) - self.beta_n(V_old[i])) )
             fin_m.append(dm[i]+timestep*(self.alpha_m(V_old[i])*(1-dn[i]) - self.beta_m(V_old[i])) )
             fin_h.append(dh[i]+timestep*(self.alpha_h(V_old[i])*(1-dn[i]) - self.beta_h(V_old[i])) )

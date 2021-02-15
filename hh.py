@@ -26,7 +26,7 @@ class HodgkinHuxley():
         """Channel gating kinetics. Functions of membrane voltage"""
         # THis is 25 because apparently the exp fucntion doesn't like np.exp(0)
         if V == 25:
-            return 0.0
+            V = 24.99
             #print(0.1*(25.0 - V)/(np.exp(((25.0-V) / 10.0)) - 1.0))
         return 0.1*(25.0 - V)/(np.exp(2.5 - (0.1 * V)) - 1.0)
     def beta_m(self, V):
@@ -44,7 +44,7 @@ class HodgkinHuxley():
         """Channel gating kinetics. Functions of membrane voltage"""
         # THis is 25 because apparently the exp fucntion doesn't like np.exp(0)
         if V == 10:
-            return 0
+            V=9.99
         return (0.01*(10.0 - V))/(np.exp(1.0 - (0.1*V)) - 1.0)
     def beta_n(self, V):
         """Channel gating kinetics. Functions of membrane voltage"""
@@ -71,22 +71,21 @@ class HodgkinHuxley():
             final.append(self.alpha_h(i) / (self.alpha_h(i) + self.beta_h(i)))
         return final
 
-    def main(self, V_old):
+    def main(self, V_old, dn, dm ,dh):
+        V_old = [70+i for i in V_old]
         n = []
         m = []
         h = []
-        dn = self.n_inf(V_old)
-        dm = self.m_inf(V_old)
-        dh = self.h_inf(V_old)
+        # dn = self.n_inf(V_old)
+        # dm = self.m_inf(V_old)
+        # dh = self.h_inf(V_old)
         fin_n = []
         fin_h = []
         fin_m = []
         for i in range(len(V_old)):
-            # I put timestep as i here but I can change that if necessary
-            timestep = i
-            fin_n.append(dn[i]+timestep*(self.alpha_n(V_old[i])*(1-dn[i]) - self.beta_n(V_old[i])) )
-            fin_m.append(dm[i]+timestep*(self.alpha_m(V_old[i])*(1-dn[i]) - self.beta_m(V_old[i])) )
-            fin_h.append(dh[i]+timestep*(self.alpha_h(V_old[i])*(1-dn[i]) - self.beta_h(V_old[i])) )
+            fin_n.append(dn[i]+cable.dt*(self.alpha_n(V_old[i])*(1-dn[i]) - self.beta_n(V_old[i])) )
+            fin_m.append(dm[i]+cable.dt*(self.alpha_m(V_old[i])*(1-dn[i]) - self.beta_m(V_old[i])) )
+            fin_h.append(dh[i]+cable.dt*(self.alpha_h(V_old[i])*(1-dn[i]) - self.beta_h(V_old[i])) )
         n = fin_n 
         m = fin_m 
         h = fin_h 

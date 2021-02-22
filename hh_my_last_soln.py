@@ -14,7 +14,7 @@ class HodgkinHuxley():
     """Sodium (Na) Diffusion potentials, in mV"""
     V_K  = -12.0
     """Postassium (K) Diffusion potentials, in mV"""
-    V_L  = 10.6
+    V_L  = -11.0
     """Leak current Diffusion potentials, in mV"""
     counter = 0 
 
@@ -23,7 +23,6 @@ class HodgkinHuxley():
         # THis is 25 because apparently the exp fucntion doesn't like np.exp(0)
         if V == 25:
             V = 24.99
-        #print(0.1*(25.0 - V)/(np.exp(((25.0-V) / 10.0)) - 1.0))
         return 0.1*(25.0 - V)/(np.exp(2.5 - (0.1 * V)) - 1.0)
     def beta_m(self, V):
         """Channel gating kinetics. Functions of membrane voltage"""
@@ -68,36 +67,33 @@ class HodgkinHuxley():
         return final
 
     def main(self, V_old, dn, dm ,dh):
-#        n = []
-#        m = []
-#        h = []
-#        # dn = self.n_inf(V_old)
-#        # dm = self.m_inf(V_old)
-#        # dh = self.h_inf(V_old)
-#        fin_n = []
-#        fin_h = []
-#        fin_m = []
-#        for i in range(len(V_old)):
-#            fin_n.append(min(dn[i]+cable.dt*(self.alpha_n(V_old[i])*(1-dn[i]) - self.beta_n(V_old[i])), 1.0))
-#            fin_m.append(min(dm[i]+cable.dt*(self.alpha_m(V_old[i])*(1-dn[i]) - self.beta_m(V_old[i])), 1.0))
-#            fin_h.append(min(dh[i]+cable.dt*(self.alpha_h(V_old[i])*(1-dn[i]) - self.beta_h(V_old[i])) ,1.0))
-#        n = fin_n 
-#        m = fin_m 
-#        h = fin_h 
-        n=self.n_inf(V_old)
-        m=self.m_inf(V_old)
-        h=self.h_inf(V_old)
+        V_old = [70+i for i in V_old]
+        n = []
+        m = []
+        h = []
+        # dn = self.n_inf(V_old)
+        # dm = self.m_inf(V_old)
+        # dh = self.h_inf(V_old)
+        fin_n = []
+        fin_h = []
+        fin_m = []
+        for i in range(len(V_old)):
+            fin_n.append(dn[i]+cable.dt*(self.alpha_n(V_old[i])*(1-dn[i]) - self.beta_n(V_old[i])) )
+            fin_m.append(dm[i]+cable.dt*(self.alpha_m(V_old[i])*(1-dn[i]) - self.beta_m(V_old[i])) )
+            fin_h.append(dh[i]+cable.dt*(self.alpha_h(V_old[i])*(1-dn[i]) - self.beta_h(V_old[i])) )
+        n = fin_n 
+        m = fin_m 
+        h = fin_h 
 
         GK = []
         GNa = []
         GL = []
         for i in range(len(V_old)):
-            
             GK.append((self.g_K / self.C_m) * np.power(n[i], 4.0))
-            #GNa.append((self.g_Na / self.C_m) * np.power(m[i], 3.0) * h[i])
-            GNa.append((self.g_Na / self.C_m) * np.power(m[i], 3.0) * 0.596)
+            GNa.append((self.g_Na / self.C_m) * np.power(m[i], 3.0) * h[i])
             GL.append(self.g_L / self.C_m) 
         I = []
+
         for i in range(len(V_old)):
             I.append((GK[i] * (V_old[i] - self.V_K)) + (GNa[i] * (V_old[i] - self.V_Na)) + (GL[i] * (V_old[i] - self.V_L)) - cable.Input_stimuli(i*cable.dt))
 

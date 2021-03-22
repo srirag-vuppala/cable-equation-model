@@ -129,7 +129,7 @@ class HodgkinHuxley():
                 temp_dh =0
                 temp_dm =0
                 temp_dn =0
-                print("hi boo boo")
+                print("hi")
 
             dn.append(temp_dn)
             dh.append(temp_dh)

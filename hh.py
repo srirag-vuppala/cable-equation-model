@@ -99,7 +99,7 @@ class HodgkinHuxley():
             GL.append(self.g_L / self.C_m) 
         I = []
         for i in range(len(V_old)):
-            I.append((GK[i] * (V_old[i] - self.V_K)) + (GNa[i] * (V_old[i] - self.V_Na)) + (GL[i] * (V_old[i] - self.V_L)) - cable.Input_stimuli(i*cable.dt))
+            I.append((GK[i] * (V_old[i] - self.V_K)) + (GNa[i] * (V_old[i] - self.V_Na)) + (GL[i] * (V_old[i] - self.V_L)) - 0) 
 
         return [n, m, h, I]
 

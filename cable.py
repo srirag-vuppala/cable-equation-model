@@ -5,18 +5,10 @@ import matplotlib.pyplot as plt
 import os 
 
 
-def Input_stimuli(t):
-    """ Current applied to create stimulus which is dependent on time, in milli Ampere(A)/cm^2 """
-    # if 0 < t < 10:
-    #     return 5.0
-    # elif 5.0 < t < 10.0:
-    #     return 1.0
-    return 0.0 
-
 np.set_printoptions(precision=2)
 
-T = 3
-N = 3000
+T = 1.5
+N = 1000
 dt = float(T)/float(N)
 
 t = np.array([n*dt for n in range(N)])
@@ -62,11 +54,9 @@ def main():
     B_v = np.diagflat([ D_v/2 for i in range(J-1)], -1) + np.diagflat([1. - D_v for i in range(J)]) + np.diagflat([D_v/2 for i in range(J-1)], 1)
     B_v[0][0] = 1-D_v/2
     B_v[-1][-1] = 1-D_v/2
-    
-    
-    # for i in A_v[0]:
-    #     print(i)
 
+    print(A_v)
+    print(B_v)
    
     #change this value for the actual nth printing of the graph
     nplot = 10
@@ -83,7 +73,9 @@ def main():
     dn = hh.HodgkinHuxley().n_inf([j+70.0 for j in V_old])
     dm =hh.HodgkinHuxley().m_inf([j+70.0 for j in V_old])
     dh = hh.HodgkinHuxley().h_inf([j+70.0 for j in V_old])
-    
+
+    print(V_old)
+   
     # Actually making
     for i in range(1,N):
         # Here i is the ith time step in the entire simulation
@@ -116,7 +108,6 @@ def main():
             c += 1
         
         V_old = V_new
-        #print(I_ion_old)
         if i < 200:
             V_old[0] = -70+val 
             V_old[1] = -70+val 
@@ -124,10 +115,10 @@ def main():
             V_old[-1] =  -70-val 
             V_old[-2] =  -70-val 
             V_old[-3] =  -70-val 
-        #hh_arr = hh.HodgkinHuxley().main(t, V_old)
         
 os.system("ffmpeg -y -i 'foo%03d.jpg' cable_eqn.m4v")
 os.system("rm -f *.jpg")
 
 if __name__ == '__main__':
     main()
+    os.system("rm -f *.jpg")

@@ -1,1 +1,1 @@
-Hi this is a work in progress for now!
+To read more about the cable equation and this implementation - https://www.srirag.dev/article/cable-equation 

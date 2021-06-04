@@ -121,4 +121,3 @@ os.system("rm -f *.jpg")
 
 if __name__ == '__main__':
     main()
-    os.system("rm -f *.jpg")

@@ -54,9 +54,10 @@ def main():
 
     # Laplacian
     # The D_v is the constant that gets multiplied to the laplacian matrix
-    D_v = dt/((r_i + r_e)*dx*dx*Cell_peri)
+    D_v = dt/((r_i + r_e)*dx*dx*Cell_peri*C_m)
     
     # Constructing the Laplacian for the (n+1)th time step
+    # The + and - cover the identity matrix that is expressed in our final equation
     A_v = np.diagflat([-D_v/2 for _ in range(J-1)], -1) + np.diagflat([1. + D_v for _ in range(J)]) + np.diagflat([-1*D_v/2 for _ in range(J-1)], 1)
     # Defining the boundary conditions
     # Note there are only two boundaries for the cable equation because there are only two ends for a cable
@@ -75,8 +76,8 @@ def main():
 
     # injected current
     val = 30
+
     # Actually making
-    # for i in range(1,N):
     for i in range(N):
         # Continually inject current for the first 200 timesteps
         # This will serve as our excitation that we artificially give to spark the propagation of the action potential
@@ -92,7 +93,7 @@ def main():
         B_part = np.matmul(B_v, V_old) - dt*np.asarray(I_ion_old)
         V_new = np.linalg.solve(A_v, B_part)
         
-        if(i % nplot == 0): #plot results every nplot timesteps
+        if i % nplot == 0: #plot results every nplot timesteps
             plt.plot(x_grid,V_new,linewidth=2)
             plt.ylim([-100, 100])
             #plt.xlim([-2,35])
@@ -105,7 +106,7 @@ def main():
             plt.savefig(filename)
             plt.clf()
             c += 1
-        
+        # setup for the next iteration  
         V_old = V_new
          
 # snapshots the operating system takes of the plotted graphs to make it into a video

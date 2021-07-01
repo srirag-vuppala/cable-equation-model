@@ -50,7 +50,7 @@ def main():
 
     # A array of transmembrane potentials that exists at each node (in mV)
     # resting potential = -70
-    V_old= [-70 for j in range(J)]
+    V_old= [-70 for _ in range(J)]
 
     # Laplacian
     # The D_v is the constant that gets multiplied to the laplacian matrix
